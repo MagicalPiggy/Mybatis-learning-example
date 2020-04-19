@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhu.dao.IWalletDao">
+
+    <!-- 定义封装wallet和user的resultMap -->
+    <resultMap id="walletUserMap" type="wallet">
+        <id property="id" column="wid"></id>
+        <result property="uid" column="uid"></result>
+        <result property="money" column="money"></result>
+        <!-- 一对一的关系映射：配置封装user的内容-->
+        <association property="user" column="uid" javaType="user">
+            <id property="id" column="id"></id>
+            <result column="username" property="username"></result>
+            <result column="address" property="address"></result>
+            <result column="sex" property="sex"></result>
+            <result column="birthday" property="birthday"></result>
+        </association>
+    </resultMap>
+
+    <!-- 查询所有 -->
+    <select id="findAll" resultMap="walletUserMap">
+       select u.*, w.id as wid, w.uid, w.money from wallet w, user u where u.id = w.uid;
+    </select>
+
+    <!--查询所有账户同时包含用户名和地址信息-->
+    <select id="findAllWallet" resultType="walletuser">
+       select w.*, u.username, u.address from wallet w, user u where u.id = w.uid
+    </select>
+
+</mapper>
